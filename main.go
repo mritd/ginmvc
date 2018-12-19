@@ -74,7 +74,7 @@ func initConfig() {
 }
 
 func initLog() {
-	debug := viper.GetBool("ginmvc.debug")
+	debug := viper.GetBool("basic.debug")
 	if debug {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
