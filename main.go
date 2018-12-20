@@ -86,7 +86,7 @@ func initLog() {
 
 	var logFile io.Writer
 	var err error
-	logFilePath := viper.GetString("ginmvc.log")
+	logFilePath := viper.GetString("basic.log")
 	if strings.ToLower(logFilePath) != "" && strings.ToLower(logFilePath) != "stdout" {
 		logFile, err = os.OpenFile(logFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 		if err != nil {
