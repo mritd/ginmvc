@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"github.com/spf13/viper"
 	"github.com/mritd/ginmvc/utils"
+	"github.com/spf13/viper"
 )
 
 type orm struct {
