@@ -16,6 +16,7 @@ func init() {
 	})
 }
 
+// Ginrus return a logrus middleware
 func Ginrus() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		path := c.Request.URL.Path

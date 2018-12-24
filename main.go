@@ -7,10 +7,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/mritd/ginmvc/db"
-	"github.com/mritd/ginmvc/middleware"
 	"github.com/mritd/ginmvc/models"
 
+	"github.com/mritd/ginmvc/db"
+	"github.com/mritd/ginmvc/middleware"
 	"github.com/sirupsen/logrus"
 
 	"github.com/mritd/ginmvc/routers"
@@ -31,21 +31,26 @@ var rootCmd = &cobra.Command{
 Gin mvc template.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// load config
+		conf.Load()
+		// current we don't need cache
+		// if one day needs it, we can delete the comment
 		//cache.InitRedis()
+		// init mysql(gorm)
 		db.InitMySQL()
-
-		// auto migrate db
-		if viper.GetBool("basic.auto_migrate") {
-			models.AutoMigrate()
-		}
-
+		// migrate db schema
+		models.AutoMigrate()
+		// init gin router engine
 		routers.Init()
+		// load middleware
 		middleware.Setup()
+		// add gin router
 		routers.Setup()
 
+		// run gin http server
 		engine := routers.Engine()
-
-		addr := fmt.Sprint(viper.GetString("basic.addr"), ":", viper.GetInt("basic.port"))
+		addr := fmt.Sprint(conf.Basic.Addr, ":", conf.Basic.Port)
+		logrus.Infof("server listen at %s", addr)
 		utils.CheckAndExit(engine.Run(addr))
 
 	},
@@ -73,9 +78,9 @@ func initConfig() {
 	utils.CheckAndExit(viper.ReadInConfig())
 }
 
+// init log config
 func initLog() {
-	debug := viper.GetBool("basic.debug")
-	if debug {
+	if conf.Basic.Debug {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
@@ -86,17 +91,16 @@ func initLog() {
 
 	var logFile io.Writer
 	var err error
-	logFilePath := viper.GetString("basic.log")
-	if strings.ToLower(logFilePath) != "" && strings.ToLower(logFilePath) != "stdout" {
-		logFile, err = os.OpenFile(logFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
+	if strings.ToLower(conf.Basic.LogPath) != "" && strings.ToLower(conf.Basic.LogPath) != "stdout" {
+		logFile, err = os.OpenFile(conf.Basic.LogPath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 		if err != nil {
 			logrus.Fatal(err)
 		}
 	} else {
 		logFile = os.Stdout
 	}
-	logrus.SetOutput(logFile)
 
+	logrus.SetOutput(logFile)
 	logrus.Infof("GOMAXPROCS: %d", runtime.NumCPU())
 }
 

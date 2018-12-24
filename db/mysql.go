@@ -3,12 +3,13 @@ package db
 import (
 	"sync"
 
+	"github.com/mritd/ginmvc/conf"
+
 	"github.com/sirupsen/logrus"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/mritd/ginmvc/utils"
-	"github.com/spf13/viper"
 )
 
 type orm struct {
@@ -18,21 +19,17 @@ type orm struct {
 var Orm orm
 var ormOnce sync.Once
 
+// init mysql gorm
 func InitMySQL() {
-
 	ormOnce.Do(func() {
-		addr := viper.GetString("basic.mysql")
-		debug := viper.GetBool("basic.debug")
-
-		db, err := gorm.Open("mysql", addr)
+		db, err := gorm.Open("mysql", conf.Basic.MySQL)
 		utils.CheckAndExit(err)
 
-		// Disable table name's pluralization
+		// disable table name's pluralization
 		db.SingularTable(true)
-		db.LogMode(debug)
+		db.LogMode(conf.Basic.Debug)
 
 		Orm = orm{db}
 		logrus.Info("mysql init success...")
 	})
-
 }

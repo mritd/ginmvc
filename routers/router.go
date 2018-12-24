@@ -18,6 +18,7 @@ var engine *gin.Engine
 var routerOnce, userRouterOnce sync.Once
 var routerMap map[string]func(router *gin.Engine)
 
+// init gin router engine
 func Init() {
 
 	routerOnce.Do(func() {
@@ -33,10 +34,14 @@ func Init() {
 
 }
 
+// return gin router engine instance
 func Engine() *gin.Engine {
 	return engine
 }
 
+// register new router with key name
+// key name is used to eliminate duplicate routes
+// key name not case sensitive
 func register(key string, method func(router *gin.Engine)) {
 	if routerMap == nil {
 		routerMap = make(map[string]func(router *gin.Engine), 50)
@@ -48,7 +53,7 @@ func register(key string, method func(router *gin.Engine)) {
 	}
 }
 
-// user router setting
+// framework init
 func Setup() {
 	userRouterOnce.Do(func() {
 		for k, f := range routerMap {
@@ -58,6 +63,7 @@ func Setup() {
 	})
 }
 
+// for the fast return success result
 func success() gin.H {
 	return gin.H{
 		"message":   "success",
@@ -65,6 +71,7 @@ func success() gin.H {
 	}
 }
 
+// for the fast return failed result
 func failed(message string) gin.H {
 	return gin.H{
 		"message":   message,
@@ -72,6 +79,7 @@ func failed(message string) gin.H {
 	}
 }
 
+// for the fast return result with custom data
 func data(data interface{}) gin.H {
 	return gin.H{
 		"message":   "success",

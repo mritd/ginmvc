@@ -29,6 +29,7 @@ func (m middlewareSlice) Less(i, j int) bool { return m[i].Weight > m[j].Weight 
 
 func (m middlewareSlice) Swap(i, j int) { m[i], m[j] = m[j], m[i] }
 
+// registering new middleware
 func register(handlerFunc func() gin.HandlerFunc) {
 	mw := middleware{
 		HandlerFunc: handlerFunc,
@@ -37,6 +38,7 @@ func register(handlerFunc func() gin.HandlerFunc) {
 	mws = append(mws, mw)
 }
 
+// registering new middleware with weight
 func registerWithWeight(weight int, handlerFunc func() gin.HandlerFunc) {
 
 	if weight > 100 || weight < 0 {
@@ -50,6 +52,7 @@ func registerWithWeight(weight int, handlerFunc func() gin.HandlerFunc) {
 	mws = append(mws, mw)
 }
 
+// framework init func
 func Setup() {
 	sort.Sort(mws)
 	for _, mw := range mws {
