@@ -33,6 +33,8 @@ Gin mvc template.`,
 
 		// load config
 		conf.Load()
+		// init framework log
+		initLog()
 		// current we don't need cache
 		// if one day needs it, we can delete the comment
 		//cache.InitRedis()
@@ -58,7 +60,7 @@ Gin mvc template.`,
 
 func init() {
 	// all init func in here
-	cobra.OnInitialize(initConfig, initLog)
+	cobra.OnInitialize(initConfig)
 	// cmd config flag
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "ginmvc.yaml", "config file (default is ginmvc.yaml)")
 }

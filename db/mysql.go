@@ -28,6 +28,8 @@ func InitMySQL() {
 		// disable table name's pluralization
 		db.SingularTable(true)
 		db.LogMode(conf.Basic.Debug)
+		// set logger to logrus
+		db.SetLogger(NewGormrus())
 
 		Orm = orm{db}
 		logrus.Info("mysql init success...")
