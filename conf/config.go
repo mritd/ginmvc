@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// since viper does not support concurrent reads, we deserialize to a variable
 var Basic Config
 
 type Config struct {
