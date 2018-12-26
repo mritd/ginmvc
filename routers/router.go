@@ -6,12 +6,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mritd/ginmvc/conf"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/mritd/ginmvc/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 )
 
 var engine *gin.Engine
@@ -22,7 +23,7 @@ var routerMap map[string]func(router *gin.Engine)
 func Init() {
 
 	routerOnce.Do(func() {
-		if viper.GetBool("basic.debug") {
+		if conf.Basic.Debug {
 			gin.SetMode(gin.DebugMode)
 		} else {
 			gin.SetMode(gin.ReleaseMode)
