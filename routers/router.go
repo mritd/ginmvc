@@ -3,6 +3,8 @@ package routers
 import (
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,13 +17,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type routerFunc struct {
+	Name   string
+	Weight int
+	Func   func(router *gin.Engine)
+}
+
+type routerSlice []routerFunc
+
+func (r routerSlice) Len() int { return len(r) }
+
+func (r routerSlice) Less(i, j int) bool { return r[i].Weight > r[j].Weight }
+
+func (r routerSlice) Swap(i, j int) { r[i], r[j] = r[j], r[i] }
+
 var engine *gin.Engine
 var routerOnce, userRouterOnce sync.Once
-var routerMap map[string]func(router *gin.Engine)
+var routers routerSlice
 
 // init gin router engine
 func Init() {
-
 	routerOnce.Do(func() {
 		if conf.Basic.Debug {
 			gin.SetMode(gin.DebugMode)
@@ -43,23 +58,36 @@ func Engine() *gin.Engine {
 // register new router with key name
 // key name is used to eliminate duplicate routes
 // key name not case sensitive
-func register(key string, method func(router *gin.Engine)) {
-	if routerMap == nil {
-		routerMap = make(map[string]func(router *gin.Engine), 50)
+func register(name string, f func(router *gin.Engine)) {
+	registerWithWeight(name, 50, f)
+}
+
+// register new router with weight
+func registerWithWeight(name string, weight int, f func(router *gin.Engine)) {
+	if weight > 100 || weight < 0 {
+		utils.CheckAndExit(errors.New(fmt.Sprintf("router weight must be >= 0 and <=100")))
 	}
-	if routerMap[key] != nil {
-		utils.CheckAndExit(errors.New(fmt.Sprintf("method key [%s] already exist!\n", key)))
-	} else {
-		routerMap[key] = method
+
+	for _, r := range routers {
+		if strings.ToLower(name) == strings.ToLower(r.Name) {
+			utils.CheckAndExit(errors.New(fmt.Sprintf("router [%s] already register", r.Name)))
+		}
 	}
+
+	routers = append(routers, routerFunc{
+		Name:   name,
+		Weight: weight,
+		Func:   f,
+	})
 }
 
 // framework init
 func Setup() {
 	userRouterOnce.Do(func() {
-		for k, f := range routerMap {
-			f(engine)
-			logrus.Infof("load router [%s] success...", k)
+		sort.Sort(routers)
+		for _, r := range routers {
+			r.Func(engine)
+			logrus.Infof("load router [%s] success...", r.Name)
 		}
 	})
 }
