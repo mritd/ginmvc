@@ -69,11 +69,13 @@ func initConfig() {
 
 	viper.SetConfigFile(cfgFile)
 
-	if _, err := os.Stat(cfgFile); err != nil {
+	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
 		_, err := os.Create(cfgFile)
 		utils.CheckAndExit(err)
 		viper.Set("basic", conf.ExampleConfig())
 		utils.CheckAndExit(viper.WriteConfig())
+	} else if err != nil {
+		utils.CheckAndExit(err)
 	}
 
 	viper.AutomaticEnv()
@@ -95,9 +97,7 @@ func initLog() {
 	var err error
 	if strings.ToLower(conf.Basic.LogFile) != "" && strings.ToLower(conf.Basic.LogFile) != "stdout" {
 		logFile, err = os.OpenFile(conf.Basic.LogFile, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
-		if err != nil {
-			logrus.Fatal(err)
-		}
+		utils.CheckAndExit(err)
 	} else {
 		logFile = os.Stdout
 	}
