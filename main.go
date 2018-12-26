@@ -59,7 +59,7 @@ Gin mvc template.`,
 }
 
 func init() {
-	// all init func in here
+	// load config file
 	cobra.OnInitialize(initConfig)
 	// cmd config flag
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "ginmvc.yaml", "config file (default is ginmvc.yaml)")
@@ -93,8 +93,8 @@ func initLog() {
 
 	var logFile io.Writer
 	var err error
-	if strings.ToLower(conf.Basic.LogPath) != "" && strings.ToLower(conf.Basic.LogPath) != "stdout" {
-		logFile, err = os.OpenFile(conf.Basic.LogPath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
+	if strings.ToLower(conf.Basic.LogFile) != "" && strings.ToLower(conf.Basic.LogFile) != "stdout" {
+		logFile, err = os.OpenFile(conf.Basic.LogFile, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 		if err != nil {
 			logrus.Fatal(err)
 		}

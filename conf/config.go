@@ -13,7 +13,7 @@ type Config struct {
 	Port          int         `json:"port" yaml:"port" mapstructure:"port"`
 	Debug         bool        `json:"debug" yaml:"debug" mapstructure:"debug"`
 	SessionSecret string      `json:"session_secret" yaml:"session_secret" mapstructure:"session_secret"`
-	LogPath       string      `json:"log_path" yaml:"log_path" mapstructure:"log_path"`
+	LogFile       string      `json:"logfile" yaml:"logfile" mapstructure:"logfile"`
 	MySQL         string      `json:"mysql" yaml:"mysql" mapstructure:"mysql"`
 	Redis         RedisConfig `json:"redis" yaml:"redis" mapstructure:"redis"`
 	// if true, we will auto migrate db schema
@@ -34,7 +34,7 @@ func ExampleConfig() *Config {
 		Port:          8080,
 		Debug:         true,
 		SessionSecret: "ARWdeuHoNQjLXTm6rsRLFYMcTvXWtkHD",
-		LogPath:       "stdout",
+		LogFile:       "stdout",
 		AutoMigrate:   false,
 		MySQL:         "user:password@tcp(test.mysql.com)/dbname?charset=utf8&parseTime=True&loc=Local",
 		Redis: RedisConfig{
