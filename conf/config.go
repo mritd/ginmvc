@@ -16,6 +16,7 @@ type Config struct {
 	LogFile       string      `json:"logfile" yaml:"logfile" mapstructure:"logfile"`
 	MySQL         string      `json:"mysql" yaml:"mysql" mapstructure:"mysql"`
 	Redis         RedisConfig `json:"redis" yaml:"redis" mapstructure:"redis"`
+	JWT           JWTConfig   `json:"jwt" yaml:"jwt" mapstructure:"jwt"`
 	// if true, we will auto migrate db schema
 	AutoMigrate bool `json:"auto_migrate" yaml:"auto_migrate" mapstructure:"auto_migrate"`
 }
@@ -25,6 +26,11 @@ type RedisConfig struct {
 	Addr     string `json:"addr" yaml:"addr" mapstructure:"addr"`
 	Port     int    `json:"port" yaml:"port" mapstructure:"port"`
 	Password string `json:"password" yaml:"password" mapstructure:"password"`
+}
+
+type JWTConfig struct {
+	Secret        string `json:"secret" yaml:"secret" mapstructure:"secret"`
+	SigningMethod string `json:"signing_method" yaml:"signing_method" mapstructure:"signing_method"`
 }
 
 // generate basic example config
@@ -40,6 +46,10 @@ func ExampleConfig() *Config {
 		Redis: RedisConfig{
 			Addr: "test.redis.com",
 			Port: 6379,
+		},
+		JWT: JWTConfig{
+			Secret:        "aYgDKecXWPn2Jhhs3RPtGCJYPPXxZojr",
+			SigningMethod: "HS256",
 		},
 	}
 }

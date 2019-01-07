@@ -2,10 +2,21 @@ package auth
 
 import (
 	"errors"
+	"strings"
 	"time"
+
+	"github.com/mritd/ginmvc/conf"
 
 	"github.com/dgrijalva/jwt-go"
 )
+
+const (
+	JWTSigningMethodHS256 = "HS256"
+	JWTSigningMethodHS384 = "HS384"
+	JWTSigningMethodHS512 = "HS512"
+)
+
+const JWTClaimsKey = "JWT_CLAIMS"
 
 var (
 	JWTTokenMalformed   = errors.New("jwt token malformed")
@@ -24,13 +35,13 @@ type JWTClaims struct {
 
 // create jwt token
 func (j *JWT) CreateToken(claims JWTClaims) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(getSigningMethod(), claims)
 	return token.SignedString(j.SigningKey)
 }
 
 // parse token
 func (j *JWT) ParseToken(tokenString string) (*JWTClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.SigningKey, nil
 	})
 	if err != nil {
@@ -70,4 +81,26 @@ func (j *JWT) RefreshTokenWithTime(tokenString string, t time.Duration) (string,
 	jwt.TimeFunc = time.Now
 	claims.ExpiresAt = time.Now().Add(t).Unix()
 	return j.CreateToken(*claims)
+}
+
+func NewJWT() *JWT {
+	return &JWT{
+		SigningKey: []byte(conf.Basic.JWT.Secret),
+	}
+}
+
+func getSigningMethod() *jwt.SigningMethodHMAC {
+	var signingMethod *jwt.SigningMethodHMAC
+
+	switch strings.ToUpper(conf.Basic.JWT.SigningMethod) {
+	case JWTSigningMethodHS256:
+		signingMethod = jwt.SigningMethodHS256
+	case JWTSigningMethodHS384:
+		signingMethod = jwt.SigningMethodHS384
+	case JWTSigningMethodHS512:
+		signingMethod = jwt.SigningMethodHS512
+	default:
+		signingMethod = jwt.SigningMethodHS256
+	}
+	return signingMethod
 }
