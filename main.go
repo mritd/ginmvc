@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/mritd/ginmvc/auth"
 	"io"
 	"os"
 	"runtime"
@@ -42,6 +43,8 @@ Gin mvc template.`,
 		db.InitMySQL()
 		// migrate db schema
 		models.AutoMigrate()
+		// load casbin
+		auth.InitCasbin()
 		// init gin router engine
 		routers.Init()
 		// load middleware
