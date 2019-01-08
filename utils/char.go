@@ -6,6 +6,31 @@ import (
 	"time"
 )
 
+const (
+	letterBytes   = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	letterIdxBits = 6                    // 6 bits to represent a letter index
+	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
+	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
+)
+
+func RandString(n int) string {
+	b := make([]byte, n)
+	// A rand.Int63() generates 63 random bits, enough for letterIdxMax letters!
+	for i, cache, remain := n-1, rand.Int63(), letterIdxMax; i >= 0; {
+		if remain == 0 {
+			cache, remain = rand.Int63(), letterIdxMax
+		}
+		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
+			b[i] = letterBytes[idx]
+			i--
+		}
+		cache >>= letterIdxBits
+		remain--
+	}
+
+	return string(b)
+}
+
 // 指定长度随机中文字符(包含复杂字符)
 func GenFixedLengthChineseChars(length int) string {
 
@@ -21,16 +46,6 @@ func GenFixedLengthChineseChars(length int) string {
 func GenRandomLengthChineseChars(start, end int) string {
 	length := RandInt(start, end)
 	return GenFixedLengthChineseChars(length)
-}
-
-// 随机英文小写字母
-func RandStr(len int) string {
-	rand.Seed(time.Now().UnixNano())
-	data := make([]byte, len)
-	for i := 0; i < len; i++ {
-		data[i] = byte(rand.Intn(26) + 97)
-	}
-	return string(data)
 }
 
 // 指定范围随机 int

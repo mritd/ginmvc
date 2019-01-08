@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mritd/ginmvc/conf"
+	jwt "github.com/dgrijalva/jwt-go"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/mritd/ginmvc/conf"
 )
 
 const (
@@ -15,8 +15,6 @@ const (
 	JWTSigningMethodHS384 = "HS384"
 	JWTSigningMethodHS512 = "HS512"
 )
-
-const JWTClaimsKey = "JWT_CLAIMS"
 
 var (
 	JWTTokenMalformed   = errors.New("jwt token malformed")

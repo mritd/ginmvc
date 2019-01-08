@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/mritd/ginmvc/auth"
 	"io"
 	"os"
 	"runtime"
 	"strings"
+
+	"github.com/mritd/ginmvc/auth"
+	"github.com/mritd/ginmvc/ginengine"
 
 	"github.com/mritd/ginmvc/models"
 
@@ -46,17 +48,16 @@ Gin mvc template.`,
 		// load casbin
 		auth.InitCasbin()
 		// init gin router engine
-		routers.Init()
+		ginengine.Init()
 		// load middleware
 		middleware.Setup()
 		// add gin router
 		routers.Setup()
 
 		// run gin http server
-		engine := routers.Engine()
 		addr := fmt.Sprint(conf.Basic.Addr, ":", conf.Basic.Port)
 		logrus.Infof("server listen at %s", addr)
-		utils.CheckAndExit(engine.Run(addr))
+		utils.CheckAndExit(ginengine.Engine.Run(addr))
 
 	},
 }

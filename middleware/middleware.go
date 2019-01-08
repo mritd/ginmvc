@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/mritd/ginmvc/ginengine"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/mritd/ginmvc/utils"
-
-	"github.com/mritd/ginmvc/routers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -56,7 +56,7 @@ func registerWithWeight(weight int, handlerFunc func() gin.HandlerFunc) {
 func Setup() {
 	sort.Sort(mws)
 	for _, mw := range mws {
-		routers.Engine().Use(mw.HandlerFunc())
+		ginengine.Engine.Use(mw.HandlerFunc())
 	}
 	logrus.Info("load middleware success...")
 }

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mritd/ginmvc/conf"
+	"github.com/mritd/ginmvc/ginengine"
 
 	"github.com/sirupsen/logrus"
 
@@ -31,29 +31,8 @@ func (r routerSlice) Less(i, j int) bool { return r[i].Weight > r[j].Weight }
 
 func (r routerSlice) Swap(i, j int) { r[i], r[j] = r[j], r[i] }
 
-var engine *gin.Engine
-var routerOnce, userRouterOnce sync.Once
+var userRouterOnce sync.Once
 var routers routerSlice
-
-// init gin router engine
-func Init() {
-	routerOnce.Do(func() {
-		if conf.Basic.Debug {
-			gin.SetMode(gin.DebugMode)
-		} else {
-			gin.SetMode(gin.ReleaseMode)
-		}
-
-		engine = gin.New()
-		logrus.Info("create gin engine success...")
-	})
-
-}
-
-// return gin router engine instance
-func Engine() *gin.Engine {
-	return engine
-}
 
 // register new router with key name
 // key name is used to eliminate duplicate routes
@@ -86,7 +65,7 @@ func Setup() {
 	userRouterOnce.Do(func() {
 		sort.Sort(routers)
 		for _, r := range routers {
-			r.Func(engine)
+			r.Func(ginengine.Engine)
 			logrus.Infof("load router [%s] success...", r.Name)
 		}
 	})

@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"encoding/gob"
+	"time"
+)
 
 type TestModule struct {
 	ID        int        `form:"id" gorm:"column:id;primary_key;AUTO_INCREMENT;index:id"`
@@ -16,4 +19,5 @@ func (TestModule) TableName() string {
 
 func init() {
 	migrate(&TestModule{})
+	gob.Register(TestModule{})
 }
