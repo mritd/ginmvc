@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/mritd/ginmvc/cache"
 	"io"
 	"os"
 	"runtime"
@@ -38,9 +39,10 @@ Gin mvc template.`,
 		conf.Load()
 		// init framework log
 		initLog()
-		// current we don't need cache
-		// if one day needs it, we can delete the comment
-		//cache.InitRedis()
+		// init memory cache(you can also choose to use redis)
+		// if you modify the cache implementation,
+		// don't forget to modify the gin session storage.
+		cache.InitMemCache()
 		// init mysql(gorm)
 		db.InitMySQL()
 		// migrate db schema
