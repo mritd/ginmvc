@@ -1,10 +1,10 @@
 package middleware
 
 import (
+	"github.com/gin-contrib/sessions/memstore"
 	"net/http"
 	"time"
 
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/mritd/ginmvc/auth"
 	"github.com/mritd/ginmvc/conf"
 	"github.com/mritd/ginmvc/models"
@@ -23,8 +23,7 @@ func init() {
 			logrus.Warn("session secret is blank, auto generate...")
 			conf.Basic.SessionSecret = utils.RandString(16)
 		}
-
-		store := cookie.NewStore([]byte(conf.Basic.SessionSecret))
+		store := memstore.NewStore([]byte(conf.Basic.SessionSecret))
 		return sessions.Sessions("ginmvc", store)
 	})
 
