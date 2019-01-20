@@ -20,8 +20,8 @@ require (
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/sirupsen/logrus v1.2.0
+	github.com/sirupsen/logrus v1.3.0
 	github.com/spf13/cobra v0.0.3
-	github.com/spf13/viper v1.3.1
 	google.golang.org/appengine v1.3.0 // indirect
+	gopkg.in/yaml.v2 v2.2.2
 )

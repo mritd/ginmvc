@@ -23,7 +23,6 @@ import (
 
 	"github.com/mritd/ginmvc/conf"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var cfgFile string
@@ -35,13 +34,10 @@ var rootCmd = &cobra.Command{
 Gin mvc template.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		// load config
-		conf.Load()
 		// init framework log
 		initLog()
 		// init memory cache(you can also choose to use redis)
-		// if you modify the cache implementation,
-		// don't forget to modify the gin session storage.
+		// if you modify the cache implementation
 		cache.InitMemCache()
 		// init mysql(gorm)
 		db.InitMySQL()
@@ -68,24 +64,20 @@ func init() {
 	// load config file
 	cobra.OnInitialize(initConfig)
 	// cmd config flag
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "ginmvc.yaml", "config file (default is ginmvc.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "ginmvc.yaml", "config file (default is ./ginmvc.yaml)")
 }
 
 func initConfig() {
 
-	viper.SetConfigFile(cfgFile)
-
 	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
 		_, err := os.Create(cfgFile)
 		utils.CheckAndExit(err)
-		viper.Set("basic", conf.ExampleConfig())
-		utils.CheckAndExit(viper.WriteConfig())
+		conf.Basic = conf.ExampleConfig()
+		utils.CheckAndExit(conf.Basic.WriteTo(cfgFile))
 	} else if err != nil {
 		utils.CheckAndExit(err)
 	}
-
-	viper.AutomaticEnv()
-	utils.CheckAndExit(viper.ReadInConfig())
+	conf.Basic.Load(cfgFile)
 }
 
 // init log config
