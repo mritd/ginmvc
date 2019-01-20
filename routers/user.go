@@ -91,13 +91,6 @@ func userLogin(c *gin.Context) {
 
 	session := sessions.Default(c)
 	session.Set(auth.UserKey, realUser)
-	session.Set(auth.UserKey+"1", realUser)
-	session.Set(auth.UserKey+"2", realUser)
-	session.Set(auth.UserKey+"3", realUser)
-	session.Set(auth.UserKey+"4", realUser)
-	session.Set(auth.UserKey+"5", realUser)
-	session.Set(auth.UserKey+"6", realUser)
-	session.Set(auth.UserKey+"7", realUser)
 	err = session.Save()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, failed(err.Error()))
