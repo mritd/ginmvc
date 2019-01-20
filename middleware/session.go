@@ -18,7 +18,7 @@ import (
 
 // register session middleware
 func init() {
-	register(func() gin.HandlerFunc {
+	registerWithWeight(99, func() gin.HandlerFunc {
 		if conf.Basic.SessionSecret == "" {
 			logrus.Warn("session secret is blank, auto generate...")
 			conf.Basic.SessionSecret = utils.RandString(16)
