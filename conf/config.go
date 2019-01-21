@@ -61,8 +61,8 @@ func (cfg *Config) SetConfigPath(configPath string) {
 	cfg.configPath = configPath
 }
 
-// write config to yaml file
-func (cfg Config) Write() error {
+// write config
+func (cfg *Config) Write() error {
 	if cfg.configPath == "" {
 		return errors.New("config path not set")
 	}
@@ -73,7 +73,8 @@ func (cfg Config) Write() error {
 	return ioutil.WriteFile(cfg.configPath, out, 0644)
 }
 
-func (cfg Config) WriteTo(filePath string) error {
+// write config to yaml file
+func (cfg *Config) WriteTo(filePath string) error {
 	if filePath == "" {
 		return errors.New("file path is empty")
 	}
@@ -81,15 +82,23 @@ func (cfg Config) WriteTo(filePath string) error {
 	return cfg.Write()
 }
 
-// load config from yaml file
-func (cfg *Config) Load(filePath string) error {
-	if filePath == "" {
-		return errors.New("file path is empty")
+// load config
+func (cfg *Config) Load() error {
+	if cfg.configPath == "" {
+		return errors.New("config path not set")
 	}
-	cfg.configPath = filePath
-	buf, err := ioutil.ReadFile(filePath)
+	buf, err := ioutil.ReadFile(cfg.configPath)
 	if err != nil {
 		return err
 	}
 	return yaml.Unmarshal(buf, cfg)
+}
+
+// load config from yaml file
+func (cfg *Config) LoadFrom(filePath string) error {
+	if filePath == "" {
+		return errors.New("file path is empty")
+	}
+	cfg.configPath = filePath
+	return cfg.Load()
 }

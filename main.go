@@ -77,7 +77,7 @@ func initConfig() {
 	} else if err != nil {
 		utils.CheckAndExit(err)
 	}
-	conf.Basic.Load(cfgFile)
+	utils.CheckAndExit(conf.Basic.LoadFrom(cfgFile))
 }
 
 // init log config
