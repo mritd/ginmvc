@@ -1,12 +1,14 @@
 package auth
 
 import (
+	"sync"
+
+	gormadapter "github.com/casbin/gorm-adapter"
+
 	"github.com/casbin/casbin"
-	"github.com/casbin/gorm-adapter"
 	"github.com/mritd/ginmvc/conf"
 	"github.com/mritd/ginmvc/utils"
 	"github.com/sirupsen/logrus"
-	"sync"
 )
 
 const CasbinRBACModel = `
