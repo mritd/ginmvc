@@ -19,8 +19,7 @@ type Config struct {
 	MySQL         string      `yaml:"mysql"`
 	Redis         RedisConfig `yaml:"redis"`
 	JWT           JWTConfig   `yaml:"jwt"`
-	// if true, we will auto migrate db schema
-	AutoMigrate bool `json:"auto_migrate" yaml:"auto_migrate"`
+	AutoMigrate   bool        `yaml:"auto_migrate"` // if true, we will auto migrate db schema
 }
 
 type RedisConfig struct {
