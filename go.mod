@@ -26,7 +26,7 @@ require (
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/gorilla/sessions v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.9.4 // indirect
-	github.com/jinzhu/gorm v1.9.10
+	github.com/jinzhu/gorm v1.9.11
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
