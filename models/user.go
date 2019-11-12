@@ -3,23 +3,18 @@ package models
 import "encoding/gob"
 
 type User struct {
-	ID         int    `form:"id" gorm:"column:id;primary_key;AUTO_INCREMENT;index:id"`
-	Name       string `form:"name" gorm:"column:name;index:name"`
-	Email      string `form:"email" gorm:"column:email;primary_key;index:email"`
-	Mobile     string `form:"mobile" gorm:"column:mobile;index:mobile"`
-	Password   string `form:"password" gorm:"column:password"`
-	Salt       string `form:"salt" gorm:"column:salt"`
-	Lock       bool   `form:"lock" gorm:"column:lock"`
-	CreateTime int64  `gorm:"column:create_time"`
-	UpdateTime int64  `gorm:"column:update_time"`
-	LoginTime  int64  `gorm:"column:login_time"`
-}
-
-func (User) TableName() string {
-	return "t_user"
+	ID         NullInt32  `json:"id" form:"id" db:"id"`
+	Name       NullString `json:"name" form:"name" db:"name"`
+	Email      NullString `json:"email" form:"email" db:"email"`
+	Mobile     NullString `json:"mobile" form:"mobile" db:"mobile"`
+	Password   NullString `json:"password" form:"password" db:"password"`
+	Lock       NullBool   `json:"lock" form:"lock" db:"lock"`
+	Salt       NullString `db:"salt"`
+	CreateTime NullInt64  `db:"create_time"`
+	UpdateTime NullInt64  `db:"update_time"`
+	LoginTime  NullInt64  `db:"login_time"`
 }
 
 func init() {
-	migrate(&User{})
 	gob.Register(User{})
 }

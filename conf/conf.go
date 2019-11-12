@@ -2,8 +2,9 @@ package conf
 
 import (
 	"errors"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
 // since viper does not support concurrent reads, we deserialize to a variable
@@ -19,7 +20,6 @@ type Config struct {
 	MySQL         string      `yaml:"mysql"`
 	Redis         RedisConfig `yaml:"redis"`
 	JWT           JWTConfig   `yaml:"jwt"`
-	AutoMigrate   bool        `yaml:"auto_migrate"` // if true, we will auto migrate db schema
 }
 
 type RedisConfig struct {
@@ -42,7 +42,6 @@ func ExampleConfig() Config {
 		Debug:         true,
 		SessionSecret: "ARWdeuHoNQjLXTm6rsRLFYMcTvXWtkHD",
 		LogFile:       "stdout",
-		AutoMigrate:   false,
 		MySQL:         "user:password@tcp(test.mysql.com)/dbname?charset=utf8&parseTime=True&loc=Local",
 		Redis: RedisConfig{
 			Addr: "test.redis.com",

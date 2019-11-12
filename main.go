@@ -1,17 +1,21 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/mritd/ginmvc/cache"
 	"io"
+	"net/http"
 	"os"
+	"os/signal"
 	"runtime"
 	"strings"
+	"syscall"
+	"time"
+
+	"github.com/mritd/ginmvc/cache"
 
 	"github.com/mritd/ginmvc/auth"
 	"github.com/mritd/ginmvc/ginengine"
-
-	"github.com/mritd/ginmvc/models"
 
 	"github.com/mritd/ginmvc/db"
 	"github.com/mritd/ginmvc/middleware"
@@ -41,8 +45,6 @@ Gin mvc template.`,
 		cache.InitMemCache()
 		// init mysql(gorm)
 		db.InitMySQL()
-		// migrate db schema
-		models.AutoMigrate()
 		// load casbin
 		auth.InitCasbin()
 		// init gin router engine
@@ -55,7 +57,30 @@ Gin mvc template.`,
 		// run gin http server
 		addr := fmt.Sprint(conf.Basic.Addr, ":", conf.Basic.Port)
 		logrus.Infof("server listen at %s", addr)
-		utils.CheckAndExit(ginengine.Engine.Run(addr))
+
+		srv := &http.Server{
+			Addr:    addr,
+			Handler: ginengine.Engine,
+		}
+
+		go func() {
+			// service connections
+			err := srv.ListenAndServe()
+			if err != http.ErrServerClosed {
+				utils.CheckAndExit(err)
+			}
+		}()
+
+		// graceful shutdown
+		sigs := make(chan os.Signal, 1)
+		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+		<-sigs
+
+		// stop gin engine
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		utils.CheckAndExit(srv.Shutdown(ctx))
 
 	},
 }
@@ -104,6 +129,18 @@ func initLog() {
 	logrus.Infof("GOMAXPROCS: %d", runtime.NumCPU())
 }
 
+// @title Gin MVC Template
+// @version 1.0
+// @description Gin MVC Template.
+
+// @contact.name API Support
+// @contact.url https://github.com/mritd/ginmvc
+// @contact.email mritd@linux.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host :8080
 func main() {
 	cores := runtime.NumCPU()
 	runtime.GOMAXPROCS(cores)

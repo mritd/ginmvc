@@ -23,5 +23,4 @@ func Init() {
 		Engine = gin.New()
 		logrus.Info("create gin engine success...")
 	})
-
 }

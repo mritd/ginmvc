@@ -1,0 +1,157 @@
+definitions:
+  models.CommonResp:
+    properties:
+      data:
+        type: object
+      message:
+        type: string
+      timestamp:
+        type: integer
+    type: object
+  models.NullBool:
+    type: object
+  models.NullInt32:
+    type: object
+  models.NullInt64:
+    type: object
+  models.NullString:
+    type: object
+  models.User:
+    properties:
+      createTime:
+        $ref: '#/definitions/models.NullInt64'
+        type: object
+      email:
+        $ref: '#/definitions/models.NullString'
+        type: object
+      id:
+        $ref: '#/definitions/models.NullInt32'
+        type: object
+      lock:
+        $ref: '#/definitions/models.NullBool'
+        type: object
+      loginTime:
+        $ref: '#/definitions/models.NullInt64'
+        type: object
+      mobile:
+        $ref: '#/definitions/models.NullString'
+        type: object
+      name:
+        $ref: '#/definitions/models.NullString'
+        type: object
+      password:
+        $ref: '#/definitions/models.NullString'
+        type: object
+      salt:
+        $ref: '#/definitions/models.NullString'
+        type: object
+      updateTime:
+        $ref: '#/definitions/models.NullInt64'
+        type: object
+    type: object
+host: :8080
+info:
+  contact:
+    email: mritd@linux.com
+    name: API Support
+    url: https://github.com/mritd/ginmvc
+  description: Gin MVC Template.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Gin MVC Template
+  version: "1.0"
+paths:
+  /api/v1/user/login:
+    post:
+      consumes:
+      - application/json
+      description: user login
+      parameters:
+      - description: user info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message":"success","timestamp":1570889247}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+        "400":
+          description: '{"message":"user not registered or password is wrong","timestamp":1570889272}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+        "500":
+          description: '{"message":"invalid connection","timestamp":1570887977}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+      summary: user login
+      tags:
+      - User API
+  /api/v1/user/logout:
+    post:
+      description: user logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message":"success","timestamp":1570889247}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+        "500":
+          description: '{"message":"error message","timestamp":1570887977}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+      summary: user logout
+      tags:
+      - User API
+  /api/v1/user/register:
+    post:
+      consumes:
+      - application/json
+      description: user register
+      parameters:
+      - description: user info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message":"success","timestamp":1570887849}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+        "400":
+          description: '{"message":"user email [mritd@linux.com] already register","timestamp":1570887884}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+        "500":
+          description: '{"message":"invalid connection","timestamp":1570887977}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+      summary: user register
+      tags:
+      - User API
+  /healthz:
+    get:
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message":"success","timestamp":1570889247}'
+          schema:
+            $ref: '#/definitions/models.CommonResp'
+      summary: health check
+      tags:
+      - Monitor API
+swagger: "2.0"

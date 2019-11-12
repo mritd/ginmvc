@@ -8,11 +8,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mritd/ginmvc/models"
+
 	"github.com/mritd/ginmvc/ginengine"
-
-	"github.com/sirupsen/logrus"
-
 	"github.com/mritd/ginmvc/utils"
+	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 )
@@ -72,26 +72,26 @@ func Setup() {
 }
 
 // for the fast return success result
-func success() gin.H {
-	return gin.H{
-		"message":   "success",
-		"timestamp": time.Now().Unix(),
+func success() models.CommonResp {
+	return models.CommonResp{
+		Message:   "success",
+		Timestamp: time.Now().Unix(),
 	}
 }
 
 // for the fast return failed result
-func failed(message string) gin.H {
-	return gin.H{
-		"message":   message,
-		"timestamp": time.Now().Unix(),
+func failed(message string, args ...interface{}) models.CommonResp {
+	return models.CommonResp{
+		Message:   fmt.Sprintf(message, args...),
+		Timestamp: time.Now().Unix(),
 	}
 }
 
 // for the fast return result with custom data
-func data(data interface{}) gin.H {
-	return gin.H{
-		"message":   "success",
-		"data":      data,
-		"timestamp": time.Now().Unix(),
+func data(data interface{}) models.CommonResp {
+	return models.CommonResp{
+		Message:   "success",
+		Timestamp: time.Now().Unix(),
+		Data:      data,
 	}
 }
